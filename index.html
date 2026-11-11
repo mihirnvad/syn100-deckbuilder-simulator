@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deck Table</title>
+<style>
+  :root {
+    --bg: #f3efe6;
+    --panel: #ffffff;
+    --ink: #1d1a14;
+    --muted: #6b665c;
+    --line: #d8d2c4;
+    --clean: #2f8f4e;
+    --clean-bg: #e3f3e8;
+    --dirty: #6d5a44;
+    --dirty-bg: #ebe4da;
+    --neutral: #4a6a8a;
+    --neutral-bg: #e4ebf2;
+    --accent: #c8541d;
+    --warn-bg: #fff1c2;
+    --shadow: 0 1px 3px rgba(0,0,0,.12);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.35 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  button { font: inherit; cursor: pointer; border: 1px solid var(--line); background: #fff;
+    border-radius: 8px; padding: 6px 12px; color: var(--ink); }
+  button:hover { background: #f6f3ec; }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  button.primary:hover { filter: brightness(1.08); }
+  button.danger { color: #a33; border-color: #d9a3a3; }
+  button.small { padding: 3px 8px; font-size: 14px; border-radius: 6px; }
+
+  /* Header */
+  header { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; padding: 10px 16px;
+    background: var(--panel); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
+  header h1 { font-size: 18px; margin: 0 8px 0 0; }
+  .counter { display: inline-flex; align-items: center; gap: 6px; }
+  .counter .label { color: var(--muted); font-size: 14px; }
+  .counter .value { font-size: 22px; font-weight: 700; min-width: 2ch; text-align: center; }
+  .counter button { padding: 2px 10px; font-size: 18px; line-height: 1; }
+  header .spacer { flex: 1; }
+
+  .banner { padding: 10px 16px; font-size: 20px; font-weight: 700; text-align: center; }
+  .banner.phase { background: var(--warn-bg); border-bottom: 1px solid #e6cf7a; }
+  .banner.over { background: #f9d6d6; border-bottom: 1px solid #e3a3a3; }
+
+  main { padding: 12px 16px 40px; display: grid; gap: 14px; max-width: 1500px; margin: 0 auto; }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; box-shadow: var(--shadow); }
+  section h2 { margin: 0 0 10px; font-size: 16px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  section h2 .right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+
+  /* Player panels */
+  .players { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .player { border-width: 2px; }
+  .player.clean { border-color: var(--clean); }
+  .player.dirty { border-color: var(--dirty); }
+  .player h2 { font-size: 22px; text-transform: none; letter-spacing: 0; color: var(--ink); }
+  .player.clean h2 .team { color: var(--clean); }
+  .player.dirty h2 .team { color: var(--dirty); }
+  .badge { font-size: 13px; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: #fff; text-transform: uppercase; letter-spacing: .05em; }
+  .stats { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; margin-bottom: 8px; }
+  .stat { display: inline-flex; align-items: center; gap: 6px; }
+  .stat .label { color: var(--muted); font-size: 14px; }
+  .stat .value { font-size: 20px; font-weight: 700; }
+  .stat.money .value { font-size: 26px; }
+  .stat button.link { border: none; background: none; padding: 0; text-decoration: underline; color: var(--neutral); }
+  .perm-list { display: flex; flex-wrap: wrap; gap: 8px; }
+  .perm-list:empty::after { content: "nothing in play yet"; color: var(--muted); font-size: 14px; }
+
+  /* Cards */
+  .cards { display: flex; flex-wrap: wrap; gap: 12px; }
+  .card { width: 200px; min-height: 150px; border-radius: 10px; border: 2px solid; padding: 10px; display: flex; flex-direction: column; gap: 6px;
+    box-shadow: var(--shadow); background: #fff; }
+  .card .top { display: flex; align-items: flex-start; gap: 8px; }
+  .card .cost { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 17px; color: #fff; }
+  .card .name { font-weight: 700; font-size: 17px; line-height: 1.2; }
+  .card .text { font-size: 14px; line-height: 1.3; flex: 1; }
+  .card .actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .card.clean { border-color: var(--clean); background: var(--clean-bg); }
+  .card.clean .cost { background: var(--clean); }
+  .card.dirty { border-color: var(--dirty); background: var(--dirty-bg); }
+  .card.dirty .cost { background: var(--dirty); }
+  .card.neutral { border-color: var(--neutral); background: var(--neutral-bg); }
+  .card.neutral .cost { background: var(--neutral); }
+  .card.sm { width: 180px; min-height: 0; }
+  .card.sm .name { font-size: 15px; }
+  .card.sm .text { font-size: 13px; }
+  .card.empty { border-style: dashed; border-color: var(--line); background: transparent; box-shadow: none;
+    align-items: center; justify-content: center; color: var(--muted); }
+  .card .qty { font-size: 13px; color: var(--muted); }
+  .card .auto { font-size: 12px; color: var(--accent); font-weight: 600; }
+  .card .stack { font-size: 20px; font-weight: 800; text-align: right; }
+  .card.stacked { box-shadow: 2px 2px 0 #fff, 3px 3px 0 var(--line), 5px 5px 0 #fff, 6px 6px 0 var(--line); }
+
+  .hand-section h2 { font-size: 18px; }
+  .hand-section.clean { border-color: var(--clean); border-width: 2px; }
+  .hand-section.dirty { border-color: var(--dirty); border-width: 2px; }
+
+  .shop-grid { display: grid; gap: 14px; }
+  .supply { border-top: 1px solid var(--line); padding-top: 12px; }
+  .shop-row h3, .supply h3 { margin: 0 0 8px; font-size: 15px; text-transform: uppercase; letter-spacing: .04em; }
+  .shop-row.clean h3 { color: var(--clean); }
+  .shop-row.dirty h3 { color: var(--dirty); }
+  .shop-row:not(.mine) { opacity: .55; }
+  .shop-row + .shop-row { border-top: 1px solid var(--line); padding-top: 12px; }
+  .supply h3 { color: var(--neutral); }
+
+  .log { font-size: 14px; color: var(--muted); }
+  .log li { margin: 2px 0; }
+  .log li:first-child { color: var(--ink); }
+
+  dialog { border: 1px solid var(--line); border-radius: 12px; padding: 16px; max-width: min(96vw, 1100px); box-shadow: 0 10px 40px rgba(0,0,0,.25); }
+  dialog::backdrop { background: rgba(0,0,0,.35); }
+  dialog h3 { margin: 0 0 12px; display: flex; align-items: center; gap: 12px; }
+  dialog h3 .right { margin-left: auto; }
+  .overlay { position: fixed; inset: 0; background: var(--bg); display: grid; place-items: center; padding: 20px; z-index: 50; }
+  .overlay .box { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 24px; max-width: 560px; }
+  .overlay code { background: #f1ede4; padding: 2px 6px; border-radius: 4px; }
+  .hidden { display: none !important; }
+  .muted { color: var(--muted); }
+
+  @media (max-width: 900px) {
+    .players { grid-template-columns: 1fr; }
+    .card { width: 170px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="loader" class="overlay">
+  <div class="box">
+    <h2 style="margin-top:0">Loading cards…</h2>
+    <div id="loader-msg"></div>
+  </div>
+</div>
+
+<header id="header"></header>
+<div id="banner"></div>
+<main id="main"></main>
+
+<dialog id="dlg"></dialog>
+
+<script>
+(() => {
+'use strict';
+
+// ---------------------------------------------------------------------------
+// Constants
+// ---------------------------------------------------------------------------
+const HAND_SIZE = 5;
+const SHOP_SLOTS = 5;
+const PERM_SLOTS = 3;
+const MAX_TURNS = 30;
+const PHASE_EVERY = 3;
+const UNDO_DEPTH = 50;
+const SAVE_KEY = 'deckTable.save.v2';
+const CARDS_KEY = 'deckTable.cards.v1';
+const TEAMS = ['clean', 'dirty'];
+const TEAM_LABEL = { clean: 'Clean', dirty: 'Dirty', neutral: 'Neutral' };
+
+// ---------------------------------------------------------------------------
+// Card data (loaded from cards.json; cards are inert data)
+// ---------------------------------------------------------------------------
+let CARDS = {};        // id -> definition
+let CARD_LIST = [];    // definitions in file order
+
+function setCards(json) {
+  CARD_LIST = json.cards;
+  CARDS = Object.fromEntries(json.cards.map(c => [c.id, c]));
+  try { localStorage.setItem(CARDS_KEY, JSON.stringify(json)); } catch (e) {}
+}
+function def(inst) {
+  return CARDS[inst.c] || { id: inst.c, name: '(unknown card: ' + inst.c + ')', text: 'Not in cards.json', cost: 0, team: 'neutral', pile: 'neutral', permanent: false };
+}
+
+// ---------------------------------------------------------------------------
+// Game state
+// ---------------------------------------------------------------------------
+let S = null;          // current state
+let history = [];      // snapshots (JSON strings) for undo
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function newState() {
+  const st = {
+    turn: 1, active: 'clean', emissions: 0, trashLeft: 0, nextUid: 1,
+    players: {}, shops: {}, supply: {}, log: [],
+  };
+  const mk = cardId => ({ u: st.nextUid++, c: cardId });
+  const copies = c => Array.from({ length: c.qty }, () => mk(c.id));
+
+  for (const team of TEAMS) {
+    const starters = CARD_LIST.filter(c => c.team === team && c.pile === 'starter').flatMap(copies);
+    st.players[team] = { money: 0, draw: shuffle(starters), hand: [], discard: [], burned: [], permanents: [] };
+    // Each team's shop has two components: a Shop row (5 face-up cards from a
+    // shuffled deck; bought cards join your deck) and a Permanents row (3
+    // face-up cards from a shuffled deck; bought cards go into play for good).
+    st.shops[team] = {
+      deck: shuffle(CARD_LIST.filter(c => c.team === team && c.pile === 'shop').flatMap(copies)),
+      row: Array.from({ length: SHOP_SLOTS }, () => null),
+      permDeck: shuffle(CARD_LIST.filter(c => c.team === team && c.pile === 'permanent').flatMap(copies)),
+      permRow: Array.from({ length: PERM_SLOTS }, () => null),
+    };
+  }
+  for (const c of CARD_LIST.filter(c => c.team === 'neutral')) st.supply[c.id] = c.qty;
+
+  S = st;
+  for (const team of TEAMS) drawCards(team, HAND_SIZE);
+  refillShop();
+  log('New game started.');
+  return st;
+}
+
+// --- primitive mutations (no snapshot; callers wrap in commit) -------------
+function drawCards(team, n) {
+  const p = S.players[team];
+  let drawn = 0;
+  for (let i = 0; i < n; i++) {
+    if (p.draw.length === 0) {
+      if (p.discard.length === 0) break;
+      p.draw = shuffle(p.discard);
+      p.discard = [];
+      log(`${TEAM_LABEL[team]} reshuffled discard pile into a new draw pile.`);
+    }
+    p.hand.push(p.draw.pop());
+    drawn++;
+  }
+  return drawn;
+}
+function refillShop() {
+  for (const team of TEAMS) {
+    const shop = S.shops[team];
+    for (let i = 0; i < SHOP_SLOTS; i++) {
+      if (!shop.row[i] && shop.deck.length) shop.row[i] = shop.deck.pop();
+    }
+    for (let i = 0; i < PERM_SLOTS; i++) {
+      if (!shop.permRow[i] && shop.permDeck.length) shop.permRow[i] = shop.permDeck.pop();
+    }
+  }
+}
+// Move up to n copies of a neutral card from the supply into a player's play
+// area. Returns how many were actually taken.
+function takeSupply(team, cardId, n) {
+  if (!CARDS[cardId] || !(cardId in S.supply)) return 0;
+  let got = 0;
+  while (got < n && supplyHas(cardId)) {
+    if (S.supply[cardId] !== null) S.supply[cardId]--;
+    S.players[team].permanents.push({ u: S.nextUid++, c: cardId });
+    got++;
+  }
+  return got;
+}
+function takeFrom(arr, uid) {
+  const i = arr.findIndex(x => x.u === uid);
+  return i < 0 ? null : arr.splice(i, 1)[0];
+}
+function log(msg) {
+  S.log.unshift(`T${S.turn} · ${msg}`);
+  if (S.log.length > 40) S.log.length = 40;
+}
+
+// --- persistence & undo ------------------------------------------------------
+function save() {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify({ state: S, history })); } catch (e) { console.warn('save failed', e); }
+}
+function load() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return false;
+    const data = JSON.parse(raw);
+    if (!data.state || !data.state.players) return false;
+    S = data.state; history = data.history || [];
+    return true;
+  } catch (e) { return false; }
+}
+function commit(fn) {
+  history.push(JSON.stringify(S));
+  if (history.length > UNDO_DEPTH) history.shift();
+  fn();
+  save();
+  render();
+}
+function undo() {
+  if (!history.length) return;
+  S = JSON.parse(history.pop());
+  save();
+  render();
+}
+
+// ---------------------------------------------------------------------------
+// Actions
+// ---------------------------------------------------------------------------
+const A = {
+  adjust(field, delta) {
+    commit(() => {
+      S[field] = Math.max(0, S[field] + delta);
+      log(`${field[0].toUpperCase() + field.slice(1)} set to ${S[field]}.`);
+    });
+  },
+  money(team, delta) {
+    commit(() => {
+      const p = S.players[team];
+      p.money = Math.max(0, p.money + delta);
+      log(`${TEAM_LABEL[team]} money ${delta > 0 ? '+' : ''}${delta} → ${p.money}.`);
+    });
+  },
+  draw(team, n = 1) {
+    commit(() => {
+      const got = drawCards(team, n);
+      log(`${TEAM_LABEL[team]} drew ${got} card${got === 1 ? '' : 's'}.`);
+    });
+  },
+  play(team, uid) {
+    commit(() => {
+      const p = S.players[team];
+      const inst = takeFrom(p.hand, uid); if (!inst) return;
+      p.discard.push(inst);
+      const d = def(inst);
+      log(`${TEAM_LABEL[team]} played ${d.name}.`);
+      if (d.money > 0) {
+        p.money += d.money;
+        log(`${d.name}: +${d.money} money → ${p.money}.`);
+      }
+      for (const [rid, n] of Object.entries(d.resources || {})) {
+        const got = takeSupply(team, rid, n);
+        const rd = CARDS[rid];
+        log(`${d.name}: took ${got} ${rd ? rd.name : rid} into play${got < n ? ` (supply ran out, wanted ${n})` : ''}.`);
+      }
+      if (d.trash > 0 && team === S.active) {
+        S.trashLeft += d.trash;
+        log(`${d.name} allows ${d.trash} trash${d.trash === 1 ? '' : 'es'} this turn.`);
+      }
+    });
+  },
+  discardFromHand(team, uid) {
+    commit(() => {
+      const p = S.players[team];
+      const inst = takeFrom(p.hand, uid); if (!inst) return;
+      p.discard.push(inst);
+      log(`${TEAM_LABEL[team]} discarded ${def(inst).name} from hand.`);
+    });
+  },
+  // verb: 'Burned' (Dirty only) | 'Trashed' (needs a trash allowance from a
+  // played card) | 'Removed' (cards in play, e.g. a destroyed building).
+  // from: 'hand' | 'discard' | 'permanents'. All go to the removed-from-game pile.
+  remove(team, from, uid, verb) {
+    if (verb === 'Burned' && !canBurn(team)) return;
+    if (verb === 'Trashed' && !canTrash(team)) return;
+    commit(() => {
+      const p = S.players[team];
+      const inst = takeFrom(p[from], uid); if (!inst) return;
+      p.burned.push(inst);
+      if (verb === 'Trashed') S.trashLeft--;
+      log(`${TEAM_LABEL[team]} ${verb.toLowerCase()} ${def(inst).name} from ${from === 'permanents' ? 'play' : from}.`);
+    });
+  },
+  buyShop(team, slot) {
+    if (team !== S.active) return;
+    commit(() => {
+      const p = S.players[team], shop = S.shops[team];
+      const inst = shop.row[slot]; if (!inst) return;
+      const d = def(inst);
+      if (p.money < d.cost) return;
+      p.money -= d.cost;
+      shop.row[slot] = null;
+      (d.permanent ? p.permanents : p.discard).push(inst);
+      refillShop();
+      log(`${TEAM_LABEL[team]} bought ${d.name} for ${d.cost}${d.permanent ? ' (into play)' : ''}.`);
+    });
+  },
+  buyPermanent(team, slot) {
+    if (team !== S.active) return;
+    commit(() => {
+      const p = S.players[team], shop = S.shops[team];
+      const inst = shop.permRow[slot]; if (!inst) return;
+      const d = def(inst);
+      if (p.money < d.cost) return;
+      p.money -= d.cost;
+      shop.permRow[slot] = null;
+      p.permanents.push(inst);
+      refillShop();
+      log(`${TEAM_LABEL[team]} bought permanent ${d.name} for ${d.cost} (into play).`);
+    });
+  },
+  // Neutral supply: buy = pay cost; take = free (for "take 2 wood cards" effects).
+  // Permanents and taken resources go into play ("in front of you"); bought
+  // non-permanents go to discard.
+  supply(cardId, mode) {
+    commit(() => {
+      const team = S.active, p = S.players[team];
+      const d = CARDS[cardId]; if (!d || !supplyHas(cardId)) return;
+      if (mode === 'buy') {
+        if (p.money < d.cost) return;
+        p.money -= d.cost;
+      }
+      const toPlay = d.permanent || mode === 'take';
+      if (toPlay) takeSupply(team, cardId, 1);
+      else {
+        if (S.supply[cardId] !== null) S.supply[cardId]--;
+        p.discard.push({ u: S.nextUid++, c: cardId });
+      }
+      log(`${TEAM_LABEL[team]} ${mode === 'buy' ? 'bought' : 'took'} ${d.name}${mode === 'buy' ? ' for ' + d.cost : ''}${toPlay ? ' (into play)' : ''}.`);
+    });
+  },
+  endTurn() {
+    commit(() => {
+      const team = S.active, p = S.players[team];
+      const n = p.hand.length, unspent = p.money;
+      p.discard.push(...p.hand); p.hand = [];
+      p.money = 0;
+      drawCards(team, HAND_SIZE);
+      log(`${TEAM_LABEL[team]} ended turn: discarded ${n}, drew to ${p.hand.length}${unspent ? `, lost ${unspent} unspent money` : ''}.`);
+      S.trashLeft = 0;
+      S.active = team === 'clean' ? 'dirty' : 'clean';
+      if (S.active === 'clean') { S.turn++; log(`Turn ${S.turn} begins.`); }
+    });
+  },
+  newGame() {
+    history = [];
+    newState();
+    save();
+    render();
+  },
+};
+
+// Rules: only Dirty burns; anyone may trash only while a played card grants it.
+const canBurn = team => team === 'dirty';
+// Neutral supply: null = unlimited pile.
+const supplyHas = id => S.supply[id] === null || S.supply[id] > 0;
+const canTrash = team => team === S.active && S.trashLeft > 0;
+const REMOVED_LABEL = { clean: 'Removed', dirty: 'Burned' };
+
+// ---------------------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------------------
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+
+function autoNotes(d) {
+  const notes = [];
+  if (d.money > 0) notes.push(`+${d.money} money`);
+  for (const [rid, n] of Object.entries(d.resources || {})) notes.push(`takes ${n} ${CARDS[rid] ? CARDS[rid].name : rid}`);
+  return notes.length ? `<div class="auto">⚙ ${esc(notes.join(' · '))} automatically when played</div>` : '';
+}
+function cardHtml(d, { small = false, actions = '', extra = '' } = {}) {
+  return `<div class="card ${d.team}${small ? ' sm' : ''}${extra.includes('class="stack"') ? ' stacked' : ''}">
+    <div class="top"><div class="cost">${d.cost}</div><div class="name">${esc(d.name)}</div></div>
+    <div class="text">${esc(d.text)}</div>
+    ${autoNotes(d)}
+    ${extra}
+    ${actions ? `<div class="actions">${actions}</div>` : ''}
+  </div>`;
+}
+const btn = (label, action, cls = 'small') => `<button class="${cls}" data-action="${esc(action)}">${esc(label)}</button>`;
+const counter = (label, field) =>
+  `<div class="counter"><span class="label">${label}</span>
+     <button data-action="adjust:${field}:-1">−</button><span class="value">${S[field]}</span><button data-action="adjust:${field}:1">+</button></div>`;
+
+function render() {
+  const active = S.active, other = active === 'clean' ? 'dirty' : 'clean';
+
+  // Header
+  document.getElementById('header').innerHTML = `
+    <h1>Deck Table</h1>
+    ${counter('Turn', 'turn')}
+    ${counter('Emissions', 'emissions')}
+    <div class="spacer"></div>
+    <button data-action="undo" ${history.length ? '' : 'disabled'}>↶ Undo (${history.length})</button>
+    <button class="danger" data-action="confirmNew">New game</button>`;
+
+  // Banner
+  const b = document.getElementById('banner');
+  if (S.turn > MAX_TURNS) { b.className = 'banner over'; b.textContent = `Turn ${S.turn}: the game ended after turn ${MAX_TURNS}.`; }
+  else if (S.turn % PHASE_EVERY === 0) { b.className = 'banner phase'; b.textContent = `⚡ Turn ${S.turn} is a Power Generation Phase — resolve it on the board.`; }
+  else { b.className = ''; b.textContent = ''; }
+
+  // Player panels
+  const panels = TEAMS.map(team => {
+    const p = S.players[team];
+    const isActive = team === active;
+    // Stack identical in-play cards: one card per id with a ×N count; the
+    // buttons act on one copy at a time.
+    const stacks = new Map();
+    for (const inst of p.permanents) {
+      if (!stacks.has(inst.c)) stacks.set(inst.c, { first: inst, n: 0 });
+      stacks.get(inst.c).n++;
+    }
+    const perms = [...stacks.values()].map(({ first, n }) => cardHtml(def(first), {
+      small: true,
+      extra: n > 1 ? `<div class="stack">× ${n}</div>` : '',
+      actions: (canBurn(team) ? btn(n > 1 ? 'Burn 1' : 'Burn', `remove:${team}:permanents:${first.u}:Burned`) : '') +
+               btn(n > 1 ? 'Remove 1' : 'Remove', `remove:${team}:permanents:${first.u}:Removed`),
+    })).join('');
+    return `<section class="player ${team}">
+      <h2><span class="team">${TEAM_LABEL[team]} Energy</span> ${isActive ? '<span class="badge">Active</span>' : ''}
+        <span class="right">${isActive ? '' : btn('Show hand', `showHand:${team}`, '')}</span></h2>
+      <div class="stats">
+        <div class="stat money"><span class="label">Money</span>
+          <button class="small" data-action="money:${team}:-1">−</button><span class="value">${p.money}</span><button class="small" data-action="money:${team}:1">+</button>
+          <button class="small" data-action="money:${team}:5">+5</button></div>
+        <div class="stat"><span class="label">Hand</span><span class="value">${p.hand.length}</span></div>
+        <div class="stat"><span class="label">Draw</span><span class="value">${p.draw.length}</span></div>
+        <div class="stat"><button class="link" data-action="showPile:${team}:discard">Discard</button><span class="value">${p.discard.length}</span></div>
+        <div class="stat"><button class="link" data-action="showPile:${team}:burned">${REMOVED_LABEL[team]}</button><span class="value">${p.burned.length}</span></div>
+        ${btn('Draw 1', `draw:${team}:1`)}
+      </div>
+      <div class="muted" style="font-size:14px;margin-bottom:6px">In play (permanents &amp; resources)</div>
+      <div class="perm-list">${perms}</div>
+    </section>`;
+  }).join('');
+
+  // Active hand
+  const ap = S.players[active];
+  const hand = ap.hand.map(inst => cardHtml(def(inst), {
+    actions: btn('Play', `play:${active}:${inst.u}`, 'small primary') +
+             (canBurn(active) ? btn('Burn', `remove:${active}:hand:${inst.u}:Burned`) : '') +
+             (canTrash(active) ? btn('Trash', `remove:${active}:hand:${inst.u}:Trashed`, 'small danger') : ''),
+  })).join('') || '<div class="muted">Hand is empty.</div>';
+  const trashNote = S.trashLeft > 0
+    ? `<span class="badge" style="background:#a33">Trash available: ${S.trashLeft}</span>` : '';
+  const handSection = `<section class="hand-section ${active}">
+    <h2>${TEAM_LABEL[active]}'s hand <span class="muted" style="font-weight:normal;text-transform:none;letter-spacing:0">(${ap.hand.length} cards · ${TEAM_LABEL[other]} has ${S.players[other].hand.length})</span>
+      ${trashNote}
+      <span class="right">${btn('End turn → ' + TEAM_LABEL[other], 'endTurn', 'primary')}</span></h2>
+    <div class="cards">${hand}</div>
+  </section>`;
+
+  // Shops: one row per team; only the active team's row is buyable.
+  const shopRows = TEAMS.map(team => {
+    const shop = S.shops[team];
+    const mine = team === active;
+    const row = shop.row.map((inst, i) => {
+      if (!inst) return `<div class="card empty">empty</div>`;
+      const d = def(inst);
+      const can = mine && ap.money >= d.cost;
+      return cardHtml(d, {
+        actions: `<button class="small primary" data-action="buyShop:${team}:${i}" ${can ? '' : 'disabled'}>Buy (${d.cost})${d.permanent ? ' → play' : ''}</button>`,
+      });
+    }).join('');
+    const perms = shop.permRow.map((inst, i) => {
+      if (!inst) return `<div class="card empty">empty</div>`;
+      const d = def(inst);
+      const can = mine && ap.money >= d.cost;
+      return cardHtml(d, {
+        actions: `<button class="small primary" data-action="buyPermanent:${team}:${i}" ${can ? '' : 'disabled'}>Buy (${d.cost}) → play</button>`,
+      });
+    }).join('');
+    return `<div class="shop-row ${team}${mine ? ' mine' : ''}">
+      <h3>${TEAM_LABEL[team]} shop <span class="muted">(${shop.deck.length} in deck · bought cards join your deck${mine ? '' : ' · not your shop'})</span></h3>
+      <div class="cards">${row}</div>
+      <h3 style="margin-top:12px">${TEAM_LABEL[team]} permanents <span class="muted">(${shop.permDeck.length} in deck · bought cards stay in play)</span></h3>
+      <div class="cards">${perms}</div></div>`;
+  }).join('');
+  const supply = CARD_LIST.filter(c => c.team === 'neutral').map(d => {
+    const left = S.supply[d.id];
+    const has = supplyHas(d.id);
+    const canBuy = has && ap.money >= d.cost;
+    return cardHtml(d, {
+      small: true,
+      extra: `<div class="qty">${left === null ? 'unlimited' : left + ' left'}</div>`,
+      actions: `<button class="small primary" data-action="supply:${d.id}:buy" ${canBuy ? '' : 'disabled'}>Buy (${d.cost})</button>
+                <button class="small" data-action="supply:${d.id}:take" ${has ? '' : 'disabled'}>Take (free)</button>`,
+    });
+  }).join('');
+  const shopSection = `<section>
+    <h2>Shops <span class="muted" style="text-transform:none;letter-spacing:0">(buying as ${TEAM_LABEL[active]})</span></h2>
+    <div class="shop-grid">
+      ${shopRows}
+      <div class="supply"><h3>Neutral supply <span class="muted">(shared)</span></h3><div class="cards">${supply}</div></div>
+    </div>
+  </section>`;
+
+  const logSection = `<section class="log"><h2>Log</h2><ul style="margin:0;padding-left:18px">${S.log.slice(0, 8).map(l => `<li>${esc(l)}</li>`).join('')}</ul></section>`;
+
+  document.getElementById('main').innerHTML = `<div class="players">${panels}</div>${handSection}${shopSection}${logSection}`;
+}
+
+// ---------------------------------------------------------------------------
+// Dialogs
+// ---------------------------------------------------------------------------
+const dlg = document.getElementById('dlg');
+function openDialog(html) { dlg.innerHTML = html; if (!dlg.open) dlg.showModal(); }
+function closeDialog() { if (dlg.open) dlg.close(); }
+
+function showPile(team, pile) {
+  const p = S.players[team];
+  const cards = p[pile].map(inst => cardHtml(def(inst), {
+    small: true,
+    actions: pile === 'discard'
+      ? (canBurn(team) ? btn('Burn', `remove:${team}:discard:${inst.u}:Burned`) : '') +
+        (canTrash(team) ? btn('Trash', `remove:${team}:discard:${inst.u}:Trashed`, 'small danger') : '')
+      : '',
+  })).join('') || '<div class="muted">Empty.</div>';
+  const title = pile === 'burned' ? `${REMOVED_LABEL[team]} (removed from game)` : 'Discard pile';
+  const note = pile === 'discard' && canTrash(team) ? `<span class="badge" style="background:#a33">Trash available: ${S.trashLeft}</span>` : '';
+  openDialog(`<h3>${TEAM_LABEL[team]} — ${title} (${p[pile].length}) ${note} <span class="right">${btn('Close', 'close', '')}</span></h3>
+    <div class="cards">${cards}</div>`);
+}
+function showHand(team) {
+  const p = S.players[team];
+  const cards = p.hand.map(inst => cardHtml(def(inst), {
+    small: true,
+    actions: btn('Discard', `discardFromHand:${team}:${inst.u}`) + (canBurn(team) ? btn('Burn', `remove:${team}:hand:${inst.u}:Burned`) : ''),
+  })).join('') || '<div class="muted">Empty.</div>';
+  openDialog(`<h3>${TEAM_LABEL[team]}'s hand (${p.hand.length}) <span class="muted" style="font-weight:normal">— for forced discards; close when done</span>
+    <span class="right">${btn('Close', 'close', '')}</span></h3><div class="cards">${cards}</div>`);
+}
+function confirmNew() {
+  openDialog(`<h3>Start a new game?</h3><p>The current game will be erased (undo history too).</p>
+    <div style="display:flex;gap:8px;justify-content:flex-end">${btn('Cancel', 'close', '')}${btn('New game', 'newGame', 'danger')}</div>`);
+}
+
+// ---------------------------------------------------------------------------
+// Event dispatch (one delegated handler; actions encoded as "name:arg:arg")
+// ---------------------------------------------------------------------------
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-action]');
+  if (!el) return;
+  const [name, ...args] = el.dataset.action.split(':');
+  const num = x => parseInt(x, 10);
+  switch (name) {
+    case 'adjust': A.adjust(args[0], num(args[1])); break;
+    case 'money': A.money(args[0], num(args[1])); break;
+    case 'draw': A.draw(args[0], num(args[1])); break;
+    case 'play': A.play(args[0], num(args[1])); break;
+    case 'discardFromHand': A.discardFromHand(args[0], num(args[1])); if (dlg.open) showHand(args[0]); break;
+    case 'remove': {
+      const [team, from, uid, verb] = args;
+      A.remove(team, from, num(uid), verb);
+      if (dlg.open) { if (from === 'discard') showPile(team, 'discard'); else if (from === 'hand') showHand(team); }
+      break;
+    }
+    case 'buyShop': A.buyShop(args[0], num(args[1])); break;
+    case 'buyPermanent': A.buyPermanent(args[0], num(args[1])); break;
+    case 'supply': A.supply(args[0], args[1]); break;
+    case 'endTurn': A.endTurn(); break;
+    case 'undo': undo(); break;
+    case 'confirmNew': confirmNew(); break;
+    case 'newGame': closeDialog(); A.newGame(); break;
+    case 'showPile': showPile(args[0], args[1]); break;
+    case 'showHand': showHand(args[0]); break;
+    case 'close': closeDialog(); break;
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Boot: load cards.json (fetch; falls back to cached copy or a file picker)
+// ---------------------------------------------------------------------------
+async function boot() {
+  const loader = document.getElementById('loader');
+  const msg = document.getElementById('loader-msg');
+  let json = null;
+  try {
+    const res = await fetch('cards.json', { cache: 'no-store' });
+    if (res.ok) json = await res.json();
+  } catch (e) { /* file:// or offline */ }
+  if (!json) {
+    try { json = JSON.parse(localStorage.getItem(CARDS_KEY)); } catch (e) {}
+    if (json) msg.innerHTML = `<p class="muted">Could not fetch cards.json (opened as a local file?). Using the last loaded copy.
+      To pick up edits, serve the folder with <code>python -m http.server</code> or load the file below.</p>`;
+  }
+  if (!json) {
+    msg.innerHTML = `<p>Could not fetch <code>cards.json</code>. Browsers block this when the page is opened as a local file.</p>
+      <p>Either serve the folder (<code>python -m http.server</code>, then open <code>http://localhost:8000</code>) or pick the file:</p>
+      <input type="file" id="pick" accept=".json">`;
+    json = await new Promise(resolve => {
+      document.getElementById('pick').addEventListener('change', ev => {
+        const f = ev.target.files[0]; if (!f) return;
+        const r = new FileReader();
+        r.onload = () => { try { resolve(JSON.parse(r.result)); } catch (e) { msg.insertAdjacentHTML('beforeend', '<p style="color:#a33">Not valid JSON.</p>'); } };
+        r.readAsText(f);
+      });
+    });
+  }
+  if (!json.cards || !Array.isArray(json.cards)) { msg.innerHTML = '<p style="color:#a33">cards.json has no "cards" array.</p>'; return; }
+  setCards(json);
+  if (!load() || !S.shops || !S.shops.clean.permRow) newState();
+  // Keep the supply in step with cards.json edits (new piles, unlimited piles).
+  for (const c of CARD_LIST.filter(c => c.team === 'neutral')) {
+    if (!(c.id in S.supply) || c.qty === null) S.supply[c.id] = c.qty;
+  }
+  save();
+  loader.classList.add('hidden');
+  render();
+}
+boot();
+
+})();
+</script>
+</body>
+</html>
