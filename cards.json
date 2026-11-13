@@ -2,11 +2,12 @@
   "source": "Cards.xlsx",
   "setup": {
     "power_phase_every": 4,
-    "max_turns": 30,
+    "max_turns": 40,
     "starting_emissions": 5,
     "starting_play": {
       "clean": {
-        "clean-permanent-windmill": 2,
+        "clean-permanent-windmill": 1,
+        "clean-permanent-solar-panels": 1,
         "clean-permanent-hydroelectric-plant": 1
       },
       "dirty": {
