@@ -174,7 +174,7 @@
       "id": "clean-permanent-hydroelectric-plant",
       "team": "clean",
       "pile": "permanent",
-      "cost": 5,
+      "cost": 6,
       "name": "Hydroelectric plant",
       "text": "Must be placed on coast or river tile. When activated, generate 2 power.",
       "qty": 3,
