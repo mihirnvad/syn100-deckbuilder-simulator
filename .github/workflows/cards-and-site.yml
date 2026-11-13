@@ -1,0 +1,81 @@
+# On every push to main:
+#   1. If Cards.xlsx changed in that push, regenerate cards.json from it and
+#      commit the result back to main.
+#   2. Deploy the folder to GitHub Pages (Settings -> Pages -> Source must be
+#      "GitHub Actions").
+# Hand-edits to cards.json alone are left untouched and simply deployed.
+name: Cards and site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: cards-and-site
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check whether Cards.xlsx changed in this push
+        id: xlsx
+        run: |
+          before="${{ github.event.before }}"
+          if [ -z "$before" ] || ! git cat-file -e "$before" 2>/dev/null; then
+            before="HEAD~1"
+          fi
+          if ! git cat-file -e "$before" 2>/dev/null; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"   # first commit: build everything
+          elif git diff --name-only "$before" HEAD | grep -qx 'Cards.xlsx'; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Regenerate cards.json from Cards.xlsx
+        if: steps.xlsx.outputs.changed == 'true'
+        run: |
+          pip install openpyxl
+          python convert_cards.py Cards.xlsx cards.json
+
+      - name: Commit regenerated cards.json
+        if: steps.xlsx.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add cards.json
+          if git diff --cached --quiet; then
+            echo "cards.json unchanged"
+          else
+            git commit -m "Regenerate cards.json from Cards.xlsx"
+            git push
+          fi
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -24,7 +24,15 @@ then open <http://localhost:8000>. (Opening `index.html` directly also works:
 the page falls back to a file picker for `cards.json`, and remembers the last
 loaded copy.)
 
-## Regenerate cards.json
+## Automatic updates on GitHub
+
+`.github/workflows/cards-and-site.yml` runs on every push to `main`. If the
+push changed `Cards.xlsx` (including an upload through the GitHub web UI), it
+regenerates `cards.json`, commits it back, and then deploys the folder to
+GitHub Pages. Pushes that only touch `cards.json` or `index.html` are deployed
+as-is. For this to publish, set Settings → Pages → Source to **GitHub Actions**.
+
+## Regenerate cards.json by hand
 
 ```
 pip install openpyxl
