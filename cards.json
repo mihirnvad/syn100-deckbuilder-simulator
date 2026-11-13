@@ -11,6 +11,7 @@
       "qty": 10,
       "money": 2,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -24,6 +25,7 @@
       "qty": 10,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -37,6 +39,7 @@
       "qty": null,
       "money": 0,
       "permanent": false,
+      "resource": true,
       "trash": 0,
       "resources": {}
     },
@@ -50,6 +53,7 @@
       "qty": null,
       "money": 0,
       "permanent": false,
+      "resource": true,
       "trash": 0,
       "resources": {}
     },
@@ -63,6 +67,7 @@
       "qty": null,
       "money": 0,
       "permanent": false,
+      "resource": true,
       "trash": 0,
       "resources": {}
     },
@@ -76,6 +81,7 @@
       "qty": null,
       "money": 0,
       "permanent": false,
+      "resource": true,
       "trash": 0,
       "resources": {}
     },
@@ -89,6 +95,7 @@
       "qty": 7,
       "money": 1,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -102,6 +109,7 @@
       "qty": 2,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -115,6 +123,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -128,6 +137,7 @@
       "qty": 4,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -141,6 +151,7 @@
       "qty": 4,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -154,6 +165,7 @@
       "qty": 3,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -167,6 +179,7 @@
       "qty": 2,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -180,6 +193,7 @@
       "qty": 3,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -193,6 +207,7 @@
       "qty": 1,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -206,6 +221,7 @@
       "qty": 1,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -219,6 +235,7 @@
       "qty": 1,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -232,6 +249,7 @@
       "qty": 2,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -245,6 +263,7 @@
       "qty": 2,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -258,6 +277,7 @@
       "qty": 3,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -271,6 +291,7 @@
       "qty": 1,
       "money": 1,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -284,6 +305,7 @@
       "qty": 2,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -297,6 +319,7 @@
       "qty": 3,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -310,6 +333,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 1,
       "resources": {}
     },
@@ -323,6 +347,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -336,6 +361,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -349,6 +375,7 @@
       "qty": 2,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -362,6 +389,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -375,6 +403,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -388,6 +417,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -401,6 +431,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -414,6 +445,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -427,6 +459,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -440,6 +473,7 @@
       "qty": 7,
       "money": 1,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -453,6 +487,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -466,6 +501,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {
         "neutral-neutral-coal": 2
@@ -481,6 +517,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {
         "neutral-neutral-natural-gas": 2
@@ -496,6 +533,7 @@
       "qty": 5,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -509,6 +547,7 @@
       "qty": 4,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -522,6 +561,7 @@
       "qty": 3,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -535,6 +575,7 @@
       "qty": 1,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -548,6 +589,7 @@
       "qty": 1,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -561,6 +603,7 @@
       "qty": 1,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -574,6 +617,7 @@
       "qty": 1,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -587,6 +631,7 @@
       "qty": 1,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -600,6 +645,7 @@
       "qty": 1,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -613,6 +659,7 @@
       "qty": 1,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -626,6 +673,7 @@
       "qty": 2,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -639,6 +687,7 @@
       "qty": 2,
       "money": 0,
       "permanent": true,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -652,6 +701,7 @@
       "qty": 2,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -665,6 +715,7 @@
       "qty": 3,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -678,6 +729,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -691,6 +743,7 @@
       "qty": 3,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -704,6 +757,7 @@
       "qty": 3,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -717,6 +771,7 @@
       "qty": 1,
       "money": 3,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -730,6 +785,7 @@
       "qty": 1,
       "money": 3,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -743,6 +799,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -756,6 +813,7 @@
       "qty": 1,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -769,6 +827,7 @@
       "qty": 2,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {}
     },
@@ -782,6 +841,7 @@
       "qty": 2,
       "money": 0,
       "permanent": false,
+      "resource": false,
       "trash": 0,
       "resources": {
         "neutral-neutral-wood": 2

@@ -63,6 +63,9 @@ MONEY_RE = re.compile(r"^\s*gain\s+(\d+)\s+money\b(?!\s+for\s+each)", re.IGNOREC
 # automatically when the card is played. Conditional ones ("Then, if you are
 # on a plains tile, ... take 4 coal cards") stay manual.
 RESOURCE_RE = re.compile(r"^\s*(?:gain|take)\s+(\d+)\s+(coal|natural gas|wood|synthetic fuel)\b", re.IGNORECASE)
+# Neutral cards that are resources: they always go into play ("keep this card
+# in front of you"), whether bought, taken or granted by another card.
+RESOURCE_NAMES = {"wood", "coal", "natural gas", "synthetic fuel"}
 
 
 def auto_money(text):
@@ -133,6 +136,7 @@ def main(xlsx_path, out_path):
                 # discard pile when bought. Buildings/policies listed outside the
                 # Permanents groups (e.g. Neutral "Power line (building)") too.
                 "permanent": pile == "permanent" or "(building)" in lname or "(policy)" in lname,
+                "resource": pile == "neutral" and lname in RESOURCE_NAMES,
                 "trash": TRASH_GRANTS.get(name, 0),
             })
     # Second pass: resource auto-take needs the neutral card ids.
@@ -155,6 +159,7 @@ def main(xlsx_path, out_path):
         print(f"== {team} / {pile}: {len(group)} cards, {total} copies")
         for c in group:
             flag = ((" [PERMANENT]" if c["permanent"] else "")
+                    + (" [RESOURCE]" if c["resource"] else "")
                     + (f" [GRANTS {c['trash']} TRASH]" if c["trash"] else "")
                     + (f" [+{c['money']} MONEY ON PLAY]" if c["money"] else "")
                     + "".join(f" [TAKES {n} {rid.split('-')[-1].upper()} ON PLAY]" for rid, n in c["resources"].items()))

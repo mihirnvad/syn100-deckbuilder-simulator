@@ -403,7 +403,9 @@ const A = {
         if (p.money < d.cost) return;
         p.money -= d.cost;
       }
-      const toPlay = d.permanent || mode === 'take';
+      // Permanents and resources always go into play; only deck cards like
+      // State grants go to the discard pile when bought.
+      const toPlay = d.permanent || d.resource || mode === 'take';
       if (toPlay) takeSupply(team, cardId, 1);
       else {
         if (S.supply[cardId] !== null) S.supply[cardId]--;
@@ -567,7 +569,7 @@ function render() {
     return cardHtml(d, {
       small: true,
       extra: `<div class="qty">${left === null ? 'unlimited' : left + ' left'}</div>`,
-      actions: `<button class="small primary" data-action="supply:${d.id}:buy" ${canBuy ? '' : 'disabled'}>Buy (${d.cost})</button>
+      actions: `<button class="small primary" data-action="supply:${d.id}:buy" ${canBuy ? '' : 'disabled'}>Buy (${d.cost})${d.permanent || d.resource ? ' → play' : ''}</button>
                 <button class="small" data-action="supply:${d.id}:take" ${has ? '' : 'disabled'}>Take (free)</button>`,
     });
   }).join('');

@@ -49,6 +49,9 @@ parse.
   piles). Teams cannot buy from each other's shop or permanents.
 - `permanent: true` cards go to the buyer's "In play" area instead of their
   discard pile when bought (also used for neutral buildings like Power line).
+- `resource: true` (wood, coal, natural gas, synthetic fuel) cards also go
+  into play whether bought or taken; only deck cards like State grants go to
+  the discard pile when bought from the neutral supply.
 - `qty`: number of copies. `null` on a neutral card means an unlimited supply
   pile (wood, coal, natural gas, synthetic fuel).
 - `money`: added to the player's money automatically when the card is played.
