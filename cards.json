@@ -7,7 +7,7 @@
     "starting_play": {
       "clean": {
         "clean-permanent-windmill": 1,
-        "clean-permanent-solar-panels":1
+        "clean-permanent-solar-panels" : 1
         "clean-permanent-hydroelectric-plant": 1
       },
       "dirty": {
