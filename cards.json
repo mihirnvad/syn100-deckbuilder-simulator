@@ -63,7 +63,7 @@
       "pile": "neutral",
       "cost": 2,
       "name": "Natural Gas",
-      "text": "Keep this card in front of you. Can only be burnt by a natual gas plant. When burnt, increase emissions by 2.",
+      "text": "Keep this card in front of you. Counts as 2 cards if burnt by a natual gas plant. When burnt, increase emissions by 2.",
       "qty": null,
       "money": 0,
       "permanent": false,
