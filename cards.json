@@ -6,12 +6,12 @@
     "starting_emissions": 5,
     "starting_play": {
       "clean": {
-        "clean-starter-windmill": 2,
-        "clean-starter-hydroelectric-plant": 1
+        "clean-permanent-windmill": 2,
+        "clean-permanent-hydroelectric-plant": 1
       },
       "dirty": {
-        "dirty-starter-natural-gas-plant": 2,
-        "dirty-starter-small-coal-plant": 2
+        "dirty-permanent-natural-gas-plant": 2,
+        "dirty-permanent-small-coal-plant": 2
       }
     }
   },
@@ -135,48 +135,6 @@
       "cost": 4,
       "name": "Community mobilization",
       "text": "Reduce emissions by X, where X is the emissions level divided by 5 rounded down.",
-      "qty": 1,
-      "money": 0,
-      "permanent": false,
-      "resource": false,
-      "trash": 0,
-      "resources": {}
-    },
-    {
-      "id": "clean-starter-solar-panels",
-      "team": "clean",
-      "pile": "starter",
-      "cost": 4,
-      "name": "Solar panels",
-      "text": "Must be placed on a plains or city tile. When activated, place 1 power on this tile.",
-      "qty": 1,
-      "money": 0,
-      "permanent": false,
-      "resource": false,
-      "trash": 0,
-      "resources": {}
-    },
-    {
-      "id": "clean-starter-windmill",
-      "team": "clean",
-      "pile": "starter",
-      "cost": 4,
-      "name": "Windmill",
-      "text": "Must be placed on a plains or coast tile. When activated, place 1 power on this tile.",
-      "qty": 1,
-      "money": 0,
-      "permanent": false,
-      "resource": false,
-      "trash": 0,
-      "resources": {}
-    },
-    {
-      "id": "clean-starter-hydroelectric-plant",
-      "team": "clean",
-      "pile": "starter",
-      "cost": 6,
-      "name": "Hydroelectric plant",
-      "text": "Must be placed on coast or river tile. When activated, generate 2 power.",
       "qty": 1,
       "money": 0,
       "permanent": false,
@@ -559,34 +517,6 @@
       "text": "Gain 1 money and 1 natural gas.",
       "qty": 1,
       "money": 1,
-      "permanent": false,
-      "resource": false,
-      "trash": 0,
-      "resources": {}
-    },
-    {
-      "id": "dirty-starter-natural-gas-plant",
-      "team": "dirty",
-      "pile": "starter",
-      "cost": 4,
-      "name": "Natural gas plant",
-      "text": "When activated, generate 1 power and burn 2 cards.",
-      "qty": 2,
-      "money": 0,
-      "permanent": false,
-      "resource": false,
-      "trash": 0,
-      "resources": {}
-    },
-    {
-      "id": "dirty-starter-small-coal-plant",
-      "team": "dirty",
-      "pile": "starter",
-      "cost": 4,
-      "name": "Small coal plant",
-      "text": "When activated, generate 1 power and burn 2 cards.",
-      "qty": 2,
-      "money": 0,
       "permanent": false,
       "resource": false,
       "trash": 0,
