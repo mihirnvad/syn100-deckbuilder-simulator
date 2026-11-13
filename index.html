@@ -158,6 +158,7 @@ const PERM_SLOTS = 3;
 let MAX_TURNS = 30;
 let PHASE_EVERY = 4;
 let STARTING_PLAY = { clean: {}, dirty: {} };
+let STARTING_EMISSIONS = 5;
 const UNDO_DEPTH = 50;
 const SAVE_KEY = 'deckTable.save.v2';
 const CARDS_KEY = 'deckTable.cards.v1';
@@ -176,6 +177,7 @@ function setCards(json) {
   const setup = json.setup || {};
   if (setup.max_turns > 0) MAX_TURNS = setup.max_turns;
   if (setup.power_phase_every > 0) PHASE_EVERY = setup.power_phase_every;
+  if (setup.starting_emissions >= 0) STARTING_EMISSIONS = setup.starting_emissions;
   STARTING_PLAY = { clean: {}, dirty: {}, ...(setup.starting_play || {}) };
   try { localStorage.setItem(CARDS_KEY, JSON.stringify(json)); } catch (e) {}
 }
@@ -199,7 +201,7 @@ function shuffle(arr) {
 
 function newState() {
   const st = {
-    turn: 1, active: 'clean', emissions: 0, trashLeft: 0, nextUid: 1,
+    turn: 1, active: 'clean', emissions: STARTING_EMISSIONS, trashLeft: 0, nextUid: 1,
     players: {}, shops: {}, supply: {}, log: [],
   };
   const mk = cardId => ({ u: st.nextUid++, c: cardId });

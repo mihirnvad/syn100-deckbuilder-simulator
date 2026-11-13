@@ -47,6 +47,7 @@ SETUP = {
     },
     "power_phase_every": 4,
     "max_turns": 30,
+    "starting_emissions": 5,
 }
 
 GROUPS = {
@@ -178,7 +179,8 @@ def main(xlsx_path, out_path):
 
     # Summary
     print(f"Wrote {len(cards)} card definitions to {out_path}")
-    print(f"Setup: power phase every {setup['power_phase_every']} turns, {setup['max_turns']} turns max")
+    print(f"Setup: power phase every {setup['power_phase_every']} turns, {setup['max_turns']} turns max, "
+          f"emissions start at {setup['starting_emissions']}")
     for team, cards_ in setup["starting_play"].items():
         print(f"  {team} starts with in play: " + ", ".join(f"{n}x {cid}" for cid, n in cards_.items()))
     print()
