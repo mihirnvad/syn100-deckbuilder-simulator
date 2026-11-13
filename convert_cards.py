@@ -36,6 +36,19 @@ TRASH_GRANTS = {
     "Upcycling": 1,
 }
 
+# Game setup written into cards.json under "setup" (hand-editable there too).
+#   starting_play: cards each team begins with in its In play area, keyed by
+#                  card name; they are taken out of that team's permanents deck.
+#   power_phase_every: a Power Generation Phase reminder every N turns.
+SETUP = {
+    "starting_play": {
+        "clean": {"Windmill": 2, "Hydroelectric plant": 1},
+        "dirty": {"Natural gas plant": 2, "Small coal plant": 2},
+    },
+    "power_phase_every": 4,
+    "max_turns": 30,
+}
+
 GROUPS = {
     "neutral":                  ("neutral", "neutral"),
     "clean energy starters":    ("clean", "starter"),
@@ -148,11 +161,27 @@ def main(xlsx_path, out_path):
     if missing:
         print(f"WARNING: TRASH_GRANTS names not found in sheet: {sorted(missing)}")
 
+    # Resolve starting_play names to card ids for the given team.
+    setup = {k: v for k, v in SETUP.items() if k != "starting_play"}
+    setup["starting_play"] = {}
+    for team, wanted in SETUP["starting_play"].items():
+        setup["starting_play"][team] = {}
+        for name, n in wanted.items():
+            match = [c for c in cards if c["team"] == team and c["name"].lower() == name.lower()]
+            if not match:
+                raise SystemExit(f"starting_play: no {team} card named {name!r}")
+            setup["starting_play"][team][match[0]["id"]] = n
+
     with open(out_path, "w", encoding="utf-8") as f:
-        json.dump({"source": xlsx_path.replace("\\", "/").split("/")[-1], "cards": cards}, f, indent=2, ensure_ascii=False)
+        json.dump({"source": xlsx_path.replace("\\", "/").split("/")[-1], "setup": setup, "cards": cards},
+                  f, indent=2, ensure_ascii=False)
 
     # Summary
-    print(f"Wrote {len(cards)} card definitions to {out_path}\n")
+    print(f"Wrote {len(cards)} card definitions to {out_path}")
+    print(f"Setup: power phase every {setup['power_phase_every']} turns, {setup['max_turns']} turns max")
+    for team, cards_ in setup["starting_play"].items():
+        print(f"  {team} starts with in play: " + ", ".join(f"{n}x {cid}" for cid, n in cards_.items()))
+    print()
     for _, team, pile in columns:
         group = [c for c in cards if c["team"] == team and c["pile"] == pile]
         total = sum(c["qty"] or 0 for c in group)

@@ -1,5 +1,19 @@
 {
   "source": "Cards.xlsx",
+  "setup": {
+    "power_phase_every": 4,
+    "max_turns": 30,
+    "starting_play": {
+      "clean": {
+        "clean-permanent-windmill": 2,
+        "clean-permanent-hydroelectric-plant": 1
+      },
+      "dirty": {
+        "dirty-permanent-natural-gas-plant": 2,
+        "dirty-permanent-small-coal-plant": 2
+      }
+    }
+  },
   "cards": [
     {
       "id": "neutral-neutral-state-grants",

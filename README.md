@@ -76,7 +76,14 @@ Burn/Remove act on one copy at a time.
 - Trashing needs a played card with a `trash` value (currently Upcycling).
 - Each team buys only from its own shop row; the Neutral supply is shared.
 - Money resets to 0 at the end of your turn (unspent money is lost).
-- Shared counters: Emissions and Turn. Every 3rd turn shows a Power Generation
+- Shared counters: Emissions and Turn. Every 4th turn shows a Power Generation
   Phase reminder; the game ends after turn 30.
+- Starting in-play cards: Clean begins with 2 Windmills and 1 Hydroelectric
+  plant, Dirty with 2 Natural gas plants and 2 Small coal plants, taken out of
+  each team's permanents deck.
+
+These three settings live in the `setup` block at the top of `cards.json`
+(`power_phase_every`, `max_turns`, `starting_play`), generated from `SETUP`
+in `convert_cards.py`.
 
 Game state is saved in the browser's localStorage; "New game" clears it.

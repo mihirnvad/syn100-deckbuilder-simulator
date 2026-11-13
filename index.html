@@ -154,8 +154,10 @@
 const HAND_SIZE = 5;
 const SHOP_SLOTS = 5;
 const PERM_SLOTS = 3;
-const MAX_TURNS = 30;
-const PHASE_EVERY = 3;
+// Defaults; overridden by the "setup" block in cards.json.
+let MAX_TURNS = 30;
+let PHASE_EVERY = 4;
+let STARTING_PLAY = { clean: {}, dirty: {} };
 const UNDO_DEPTH = 50;
 const SAVE_KEY = 'deckTable.save.v2';
 const CARDS_KEY = 'deckTable.cards.v1';
@@ -171,6 +173,10 @@ let CARD_LIST = [];    // definitions in file order
 function setCards(json) {
   CARD_LIST = json.cards;
   CARDS = Object.fromEntries(json.cards.map(c => [c.id, c]));
+  const setup = json.setup || {};
+  if (setup.max_turns > 0) MAX_TURNS = setup.max_turns;
+  if (setup.power_phase_every > 0) PHASE_EVERY = setup.power_phase_every;
+  STARTING_PLAY = { clean: {}, dirty: {}, ...(setup.starting_play || {}) };
   try { localStorage.setItem(CARDS_KEY, JSON.stringify(json)); } catch (e) {}
 }
 function def(inst) {
@@ -215,9 +221,24 @@ function newState() {
   for (const c of CARD_LIST.filter(c => c.team === 'neutral')) st.supply[c.id] = c.qty;
 
   S = st;
+  // Starting in-play cards, taken out of that team's permanents deck (extra
+  // copies are created if the deck does not hold enough).
+  for (const team of TEAMS) {
+    const p = st.players[team], shop = st.shops[team];
+    for (const [cardId, n] of Object.entries(STARTING_PLAY[team] || {})) {
+      for (let i = 0; i < n; i++) {
+        const idx = shop.permDeck.findIndex(inst => inst.c === cardId);
+        p.permanents.push(idx >= 0 ? shop.permDeck.splice(idx, 1)[0] : mk(cardId));
+      }
+    }
+  }
   for (const team of TEAMS) drawCards(team, HAND_SIZE);
   refillShop();
   log('New game started.');
+  for (const team of TEAMS) {
+    const names = Object.entries(STARTING_PLAY[team] || {}).map(([id, n]) => `${n}× ${CARDS[id] ? CARDS[id].name : id}`);
+    if (names.length) log(`${TEAM_LABEL[team]} starts with ${names.join(', ')} in play.`);
+  }
   return st;
 }
 
@@ -482,7 +503,7 @@ function render() {
   // Banner
   const b = document.getElementById('banner');
   if (S.turn > MAX_TURNS) { b.className = 'banner over'; b.textContent = `Turn ${S.turn}: the game ended after turn ${MAX_TURNS}.`; }
-  else if (S.turn % PHASE_EVERY === 0) { b.className = 'banner phase'; b.textContent = `⚡ Turn ${S.turn} is a Power Generation Phase — resolve it on the board.`; }
+  else if (S.turn % PHASE_EVERY === 0) { b.className = 'banner phase'; b.textContent = `⚡ Turn ${S.turn} is a Power Generation Phase (every ${PHASE_EVERY} turns) — resolve it on the board.`; }
   else { b.className = ''; b.textContent = ''; }
 
   // Player panels
