@@ -42,11 +42,11 @@ TRASH_GRANTS = {
 #   power_phase_every: a Power Generation Phase reminder every N turns.
 SETUP = {
     "starting_play": {
-        "clean": {"Windmill": 2, "Hydroelectric plant": 1},
+        "clean": {"Windmill": 1, "Solar panels" : 1, "Hydroelectric plant": 1},
         "dirty": {"Natural gas plant": 2, "Small coal plant": 2},
     },
     "power_phase_every": 4,
-    "max_turns": 30,
+    "max_turns": 40,
     "starting_emissions": 5,
 }
 
